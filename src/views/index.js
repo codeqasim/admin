@@ -15,12 +15,7 @@ function RouteInterceptor({ children, isAuthenticated, ...rest }) {
         isAuthenticated ? (
           children
         ) : (
-          <Redirect
-            to={{
-              pathname: "/auth",
-              state: { from: location }
-            }}
-          />
+          children
         )
       }
     />
@@ -28,7 +23,7 @@ function RouteInterceptor({ children, isAuthenticated, ...rest }) {
 }
 
 export const Views = (props) => {
-  const { locale, token, location } = props;
+  const { locale, token, location, login } = props;
   const currentAppLocale = AppLocale[locale];
   return (
     <IntlProvider
@@ -37,14 +32,20 @@ export const Views = (props) => {
       <ConfigProvider locale={currentAppLocale.antd}>
         <Switch>
           <Route exact path="/">
-            <Redirect to="/app" />
+          {login ?  <Redirect to="/app" />:<Redirect to="/auth" />}
           </Route>
-          <Route path="/auth">
-            <AuthLayout />
-          </Route>
-          <RouteInterceptor path="/app" isAuthenticated={token}>
+          {
+            login ? 
+            <RouteInterceptor path="/app" isAuthenticated={login}>
             <AppLayout location={location}/>
           </RouteInterceptor>
+          :
+          <Route path="/auth">
+          <AuthLayout />
+        </Route>
+          }
+          
+          
         </Switch>
       </ConfigProvider>
     </IntlProvider>
@@ -54,8 +55,8 @@ export const Views = (props) => {
 
 const mapStateToProps = ({ theme, auth }) => {
   const { locale } =  theme;
-  const { token } = auth;
-  return { locale, token }
+  const { token, login } = auth;
+  return { locale, token, login }
 };
 
 export default withRouter(connect(mapStateToProps)(Views));

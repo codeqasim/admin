@@ -1,24 +1,32 @@
 import React, { useEffect } from 'react';
+import axios from 'axios'
 import { connect } from "react-redux";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import { Button, Form, Input, Divider, Alert } from "antd";
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import { GoogleSVG, FacebookSVG } from 'assets/svg/icon';
-import CustomIcon from 'components/util-components/CustomIcon'
+import CustomIcon from 'components/util-components/CustomIcon';
+import { userServices } from '../../../services'
 import { 
 	signIn, 
+	authentication,
 	showLoading, 
 	showAuthMessage, 
 	hideAuthMessage, 
 	signInWithGoogle, 
-	signInWithFacebook 
+	signInWithFacebook,
+	onLoading
 } from 'redux/actions/Auth';
 import { useHistory } from "react-router-dom";
 import { motion } from "framer-motion"
 
 export const LoginForm = props => {
 	let history = useHistory();
-
+	const [state,setState]=React.useState({
+		message:null,
+		error:false,
+	})
 	const { 
 		otherSignIn, 
 		showForgetPassword, 
@@ -28,7 +36,8 @@ export const LoginForm = props => {
 		signInWithGoogle,
 		signInWithFacebook,
 		extra, 
-		signIn, 
+		onLoading,
+		authentication,
 		token, 
 		loading,
 		redirect,
@@ -44,7 +53,32 @@ export const LoginForm = props => {
 
 	const onLogin = values => {
 		showLoading()
-		signIn(values);
+		userServices
+		.logIn(values)
+		.then(res=>{
+			if(res.message == 200){
+				var d = new Date();
+				d.setMinutes(d.getMinutes() + 30);
+				const date = d.toLocaleString();
+				var sessionObject = {
+					expiresAt: date,
+					someOtherSessionData: {
+					message: 'success'
+					}
+				}
+				authentication(true);
+				props.history.push("/")
+				window.sessionStorage.setItem('login',JSON.stringify(sessionObject))
+		}
+			else{
+				onLoading(false)
+				setState({...state,error:true,message:"Something went wrong"})
+				setTimeout(function(){ setState({...state,error:false,message:null}) }, 4000);
+			}
+		}
+		)
+		
+		
 	};
 
 	const onGoogleLogin = () => {
@@ -58,6 +92,7 @@ export const LoginForm = props => {
 	}
 
 	useEffect(() => {
+		
 		if (token !== null && allowRedirect) {
 			history.push(redirect)
 		}
@@ -66,8 +101,9 @@ export const LoginForm = props => {
 				hideAuthMessage();
 			}, 3000);
 		}
+
 	});
-	
+	console.log(window.sessionStorage.getItem('login'),"hello")
 	const renderOtherSignIn = (
 		<div>
 			<Divider>
@@ -98,15 +134,15 @@ export const LoginForm = props => {
 			<motion.div 
 				initial={{ opacity: 0, marginBottom: 0 }} 
 				animate={{ 
-					opacity: showMessage ? 1 : 0,
-					marginBottom: showMessage ? 20 : 0 
+					opacity: state.error ? 1 : 0,
+					marginBottom: state.error ? 20 : 0 
 				}}> 
-				<Alert type="error" showIcon message={message}></Alert>
+				<Alert type="error" showIcon message={state.message}></Alert>
 			</motion.div>
 			<Form 
 				layout="vertical" 
 				name="login-form" 
-				initialValues={initialCredential}
+				// initialValues={initialCredential}
 				onFinish={onLogin}
 			>
 				<Form.Item 
@@ -184,6 +220,8 @@ const mapStateToProps = ({auth}) => {
 
 const mapDispatchToProps = {
 	signIn,
+	onLoading,
+	authentication,
 	showAuthMessage,
 	showLoading,
 	hideAuthMessage,
@@ -191,4 +229,4 @@ const mapDispatchToProps = {
 	signInWithFacebook
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(LoginForm))

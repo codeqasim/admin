@@ -3,6 +3,7 @@ import {
 	AUTH_TOKEN,
 	SIGNIN,
 	SIGNOUT,
+	AUTH,
 	SIGNUP,
 	SIGNIN_WITH_GOOGLE,
 	SIGNIN_WITH_FACEBOOK
@@ -22,6 +23,7 @@ export function* signInWithFBEmail() {
   yield takeEvery(SIGNIN, function* ({payload}) {
 		const {email, password} = payload;
 		try {
+			console.log(FirebaseService.signInEmailRequest,"firebase")
 			const user = yield call(FirebaseService.signInEmailRequest, email, password);
 			if (user.message) {
 				yield put(showAuthMessage(user.message));
@@ -36,19 +38,8 @@ export function* signInWithFBEmail() {
 }
 
 export function* signOut() {
-  yield takeEvery(SIGNOUT, function* () {
-		try {
-			const signOutUser = yield call(FirebaseService.signOutRequest);
-			if (signOutUser === undefined) {
-				localStorage.removeItem(AUTH_TOKEN);
-				yield put(signOutSuccess(signOutUser));
-			} else {
-				yield put(showAuthMessage(signOutUser.message));
-			}
-		} catch (err) {
-			yield put(showAuthMessage(err));
-		}
-	});
+	showAuthMessage("You have successfully signed out!");
+	AUTH(false)
 }
 
 export function* signUpWithFBEmail() {

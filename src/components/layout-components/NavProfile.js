@@ -8,8 +8,9 @@ import {
   QuestionCircleOutlined, 
   LogoutOutlined 
 } from '@ant-design/icons';
+import {withRouter} from 'react-router-dom';
 import Icon from 'components/util-components/Icon';
-import { signOut } from 'redux/actions/Auth';
+import { authentication } from 'redux/actions/Auth';
 
 const menuItem = [
 	{
@@ -35,7 +36,12 @@ const menuItem = [
 	}
 ]
 
-export const NavProfile = ({signOut}) => {
+export const NavProfile = ({authentication,history}) => {
+  const onClickSignOut =()=>{
+    window.sessionStorage.removeItem("login");
+    authentication(false)
+    history.push("/")
+  }
   const profileImg = "/img/avatars/thumb-1.jpg";
   const profileMenu = (
     <div className="nav-profile nav-dropdown">
@@ -60,7 +66,7 @@ export const NavProfile = ({signOut}) => {
               </Menu.Item>
             );
           })}
-          <Menu.Item key={menuItem.legth + 1} onClick={e => signOut()}>
+          <Menu.Item key={menuItem.legth + 1} onClick={onClickSignOut}>
             <span>
               <LogoutOutlined className="mr-3"/>
               <span className="font-weight-normal">Sign Out</span>
@@ -81,4 +87,4 @@ export const NavProfile = ({signOut}) => {
   );
 }
 
-export default connect(null, {signOut})(NavProfile)
+export default connect(null, {authentication})(withRouter(NavProfile))

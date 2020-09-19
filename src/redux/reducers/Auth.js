@@ -1,11 +1,13 @@
 import {
 	AUTH_TOKEN,
+	AUTH,
 	AUTHENTICATED,
 	SHOW_AUTH_MESSAGE,
 	HIDE_AUTH_MESSAGE,
 	SIGNOUT_SUCCESS,
 	SIGNUP_SUCCESS,
 	SHOW_LOADING,
+	ONLOADING,
 	SIGNIN_WITH_GOOGLE_AUTHENTICATED,
   SIGNIN_WITH_FACEBOOK_AUTHENTICATED
 } from '../constants/Auth';
@@ -16,10 +18,21 @@ const initState = {
   showMessage: false,
   redirect: '',
   token: localStorage.getItem(AUTH_TOKEN),
+  login:null
 }
-
 const auth = (state = initState, action) => {
+	console.log(action,"action")
 	switch (action.type) {
+		case AUTH:
+			return {
+				...state,
+				login:action.payload,
+				loading: false,
+			}
+			case ONLOADING:
+				return{
+					...state,loading:action.payload
+				}
 		case AUTHENTICATED:
 			return {
 				...state,
@@ -30,7 +43,7 @@ const auth = (state = initState, action) => {
 		case SHOW_AUTH_MESSAGE: 
 			return {
 				...state,
-				message: action.message,
+				message: action,
 				showMessage: true,
 				loading: false
 			}

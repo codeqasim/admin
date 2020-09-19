@@ -4,11 +4,14 @@ import store from './redux/store';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Views from './views';
 import { Route, Switch } from 'react-router-dom';
+import Auth from './auth/auth'
 
 function App() {
+  
   return (
     <div className="App">
       <Provider store={store}>
+        <Auth />
         <Router>
           <Switch>
             <Route path="/" component={Views}/>

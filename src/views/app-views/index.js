@@ -6,7 +6,7 @@ export const AppViews = ({match}) => {
   return (
     <Suspense fallback={<Loading cover="content"/>}>
       <Switch>
-        <Route path={`${match.url}/dashboards`} component={lazy(() => import(`./dashboards`))} />
+        <Route path={`${match.url}`} component={lazy(() => import(`./dashboards`))} />
         <Route path={`${match.url}/apps`} component={lazy(() => import(`./apps`))} />
         <Route path={`${match.url}/components`} component={lazy(() => import(`./components`))} />
         <Route path={`${match.url}/pages`} component={lazy(() => import(`./pages`))} />

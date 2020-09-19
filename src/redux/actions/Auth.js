@@ -1,5 +1,7 @@
 import {
   SIGNIN,
+  AUTH,
+  ONLOADING,
   AUTHENTICATED,
   SIGNOUT,
   SIGNOUT_SUCCESS,
@@ -14,10 +16,23 @@ import {
   SIGNIN_WITH_FACEBOOK_AUTHENTICATED
 } from '../constants/Auth';
 
-export const signIn = (user) => {
+export const authentication = (user) => {
   return {
-    type: SIGNIN,
+    type: AUTH,
     payload: user
+  }
+}
+export const onLoading = (value) => {
+  return {
+    type: ONLOADING,
+    payload: value
+  }
+}
+
+export const signIn = (value) => {
+  return {
+    type: AUTH,
+    payload: value
   }
 };
 
@@ -83,7 +98,7 @@ export const signInWithFacebookAuthenticated = (token) => {
 export const showAuthMessage = (message) => {
   return {
     type: SHOW_AUTH_MESSAGE,
-    message
+    payload:message
   };
 };
 
