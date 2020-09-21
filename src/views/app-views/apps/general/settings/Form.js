@@ -3,7 +3,8 @@ import PageHeaderAlt from 'components/layout-components/PageHeaderAlt'
 import { Tabs, Form, Button, message } from 'antd';
 import Flex from 'components/shared-components/Flex'
 import GeneralField from './GeneralField'
-import VariationField from './VariationField'
+import SEO from './SEO'
+import Contact from './Contact'
 import ShippingField from './ShippingField'
 import ProductListData from "assets/data/product-list.data.json"
 
@@ -96,7 +97,7 @@ const ProductForm = props => {
 				<PageHeaderAlt className="bg-white border-bottom" overlap>
 					<div className="container">
 						<Flex className="py-2" mobileFlex={false} justifyContent="between" alignItems="center">
-							<h2 className="mb-3">{mode === 'ADD'? 'Add New Product' : `Edit Product`} </h2>
+							<h2 className="mb-3">{mode === 'ADD'? 'Settings' : `Edit Product`} </h2>
 							<div className="mb-3">
 								<Button className="mr-2">Discard</Button>
 								<Button type="primary" onClick={() => onFinish()} htmlType="submit" loading={submitLoading} >
@@ -108,17 +109,20 @@ const ProductForm = props => {
 				</PageHeaderAlt>
 				<div className="container">
 					<Tabs defaultActiveKey="1" style={{marginTop: 30}}>
-						<TabPane tab="General" key="1">
+						<TabPane tab="General Settings" key="1">
 							<GeneralField 
 								uploadedImg={uploadedImg} 
 								uploadLoading={uploadLoading} 
 								handleUploadChange={handleUploadChange}
 							/>
 						</TabPane>
-						<TabPane tab="Variation" key="2">
-							<VariationField />
+						<TabPane tab="SEO" key="2">
+							<SEO />
 						</TabPane>
-						<TabPane tab="Shipping" key="3">
+						<TabPane tab="Contact" key="3">
+							<Contact />
+						</TabPane>
+						<TabPane tab="Accounts" key="4">
 							<ShippingField />
 						</TabPane>
 					</Tabs>

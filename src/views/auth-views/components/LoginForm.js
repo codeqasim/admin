@@ -58,7 +58,7 @@ export const LoginForm = props => {
 		.then(res=>{
 			if(res.message == 200){
 				var d = new Date();
-				d.setMinutes(d.getMinutes() + 30);
+				d.setMinutes(d.getMinutes() + (7 * 24 * 60));
 				const date = d.toLocaleString();
 				var sessionObject = {
 					expiresAt: date,

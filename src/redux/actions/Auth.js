@@ -8,6 +8,7 @@ import {
   SHOW_AUTH_MESSAGE,
   HIDE_AUTH_MESSAGE,
   SIGNUP,
+  SETTINGS,
   SIGNUP_SUCCESS,
   SHOW_LOADING,
   SIGNIN_WITH_GOOGLE,
@@ -40,6 +41,13 @@ export const authenticated = (token) => {
   return {
     type: AUTHENTICATED,
     token
+  }
+};
+
+export const settings = (data) => {
+  return {
+    type: SETTINGS,
+    payload:data,
   }
 };
 
